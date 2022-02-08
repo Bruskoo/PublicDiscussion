@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+{% block content %}
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Список статей</title>
+</head>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col-4">
+                <br/>
+                <br/>
+                {% for article in search_results %}
+                    <div class="card shadow-sm"  style="width: 18rem;">
+                        {% if article.cover %}
+                            <img src="{{ article.cover.url }}" class="card-img-top" alt="{% static 'no-photo-available.png' %}">
+                        {% else %}
+                            <img src="{% static 'no-photo-available.png' %}" class="card-img-top">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.created_at }}</p>
+                            <a href="{% url 'article-detail' article.pk %}" class="btn btn-outline-dark btn-sm">Детальнее</a>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                {% endfor %}
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+
+
+
+
+<nav1 aria-label="...">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="btn btn-outline-dark btn-sm" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" aria-disabled="true">Previous</a>
+    </li>
+    {% endif %}
+    <li class="page-item">
+      {% if page_obj.has_next %}
+      <a class="btn btn-outline-dark btn-sm" href="?page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </li>
+  </ul>
+</nav1>
+</div1>
+{% endblock %}

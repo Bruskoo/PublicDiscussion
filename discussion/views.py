@@ -1,7 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    DeleteView,
+    UpdateView,
+    ListView,
+)
 from .models import Article, Comment
 from .forms import AddCommentForm, AddArticleForm
 
@@ -14,24 +21,24 @@ class ArticleListView(ListView):
 
 
 class ArticleDetailView(DetailView):
-    template_name = 'article_detail.html'
+    template_name = "article_detail.html"
     model = Article
     form_class = AddCommentForm
 
     def get_context_data(self, **kwargs):
         context = super(ArticleDetailView, self).get_context_data(**kwargs)
-        context['comments'] = Comment.objects.filter(article=self.kwargs['pk'])
+        context["comments"] = Comment.objects.filter(article=self.kwargs["pk"])
         return context
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'article_create.html'
+    template_name = "article_create.html"
     form_class = AddArticleForm
 
     def dispatch(self, request, *args, **kwargs):
-        """ Permission check for this class """
+        """Permission check for this class"""
         if not request.user.is_organization:
-            raise PermissionDenied('You do not have permission to create events')
+            raise PermissionDenied("You do not have permission to create events")
         return super(ArticleCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -40,15 +47,15 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 
 
 class ArticleUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'article_create.html'
+    template_name = "article_create.html"
     form_class = AddArticleForm
     model = Article
 
     def dispatch(self, request, *args, **kwargs):
-        """ Making sure that only authors can update stories """
+        """Making sure that only authors can update stories"""
         obj = self.get_object()
         if obj.author != self.request.user:
-            raise PermissionDenied('You do not have permission to create events')
+            raise PermissionDenied("You do not have permission to create events")
         return super(ArticleUpdateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -57,8 +64,8 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class ArticleDeleteView(LoginRequiredMixin, DeleteView):
-    template_name = 'article_confirm_delete.html'
-    success_url = '/'
+    template_name = "article_confirm_delete.html"
+    success_url = "/"
     model = Article
 
     def get_queryset(self):
@@ -69,13 +76,28 @@ class ArticleDeleteView(LoginRequiredMixin, DeleteView):
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = AddCommentForm
-    template_name = 'article_comment.html'
+    template_name = "article_comment.html"
 
     def form_valid(self, form, **kwargs):
-        pk = self.kwargs['pk']
+        pk = self.kwargs["pk"]
         form.instance.author = self.request.user
         form.instance.article = Article.objects.get(id=pk)
         return super().form_valid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse("article-detail", kwargs={'pk': self.kwargs['pk']})
+        return reverse("article-detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class SearchView(ListView):
+    model = Article
+    template_name = 'search.html'
+    context_object_name = 'search_results'
+
+    def get_queryset(self):
+        result = super(SearchView, self).get_queryset()
+        query = self.request.GET.get('search')
+        if query:
+            object_list = Article.objects.filter(title__contains=query)
+        else:
+            object_list = None
+        return object_list

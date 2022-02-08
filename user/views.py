@@ -1,5 +1,4 @@
 from django.contrib.messages.views import SuccessMessageMixin
-
 from .forms import UserCreationForm, UserChangeForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,21 +8,20 @@ from .models import User
 from discussion.models import Article
 
 
-
 class UserProfileView(DetailView):
     model = User
-    template_name = 'user_detail.html'
+    template_name = "user_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data(**kwargs)
-        context['articles_by_user'] = Article.objects.filter(author=self.kwargs['pk'])
+        context["articles_by_user"] = Article.objects.filter(author=self.kwargs["pk"])
         return context
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
-    template_name = 'change_password.html'
+    template_name = "change_password.html"
     success_message = "Successfully Changed Your Password"
-    success_url = "article-list"
+    success_url = "/"
 
 
 def register(request):
