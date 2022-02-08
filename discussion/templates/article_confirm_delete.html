@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Подтверждение</title>
+</head>
+<body>
+{% block content %}
+    <br/>
+    <br/>
+    <div class="col-md-6 offset-md-3 shadow-sm">
+        <div class="ms-4">
+            <form method="post">{% csrf_token %}
+                <p>Вы правда хотите удалить "{{ object }}"?</p>
+                <br/>
+                <input class="btn btn-outline-danger btn-sm" type="submit" value="Удалить">
+
+            </form>
+<br/>
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>

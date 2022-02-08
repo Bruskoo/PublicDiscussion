@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{user.username}}</title>
+</head>
+<body>
+{% block content %}
+{% if user.is_organization %}
+
+<ul>
+    <br/>
+    <br/>
+    <div class="col-md-6 offset-md-3 shadow-sm">
+        <div align="center">
+            {{ user.username }}
+            <hr/>
+        </div>
+
+        <div class="ms-4">
+            <a>Об организации:</a>
+            <div>Контакты: {{user.email}}</div>
+                <div>{{user.bio}}</div>
+        </div>
+        <br/>
+        <br/>
+    </div>
+</ul>
+{% else %}
+    <a>доступ запрещен</a>
+{% endif %}
+
+{% endblock %}
+</body>
+</html>
+

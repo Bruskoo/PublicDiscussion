@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ article.title }}</title>
+    </head>
+    <body>
+    <ul>
+        <br/>
+        <br/>
+        <div class="col-md-6 offset-md-3 shadow-sm">
+            <div align="center">
+                {{ article.title }}
+                <hr/>
+            </div>
+            <div class="ms-4">
+                {{ article.content.html|safe }}
+            </div>
+            <br/>
+            <br/>
+            Автор: <a align="right" href="{% url 'user-profile' article.author.pk %}" align="right">{{article.author}}</a>
+        </div>
+    </ul>
+    <br/>
+    {% if object.author == user %}
+        <div class="col-md-6 offset-md-3 ">
+            <div class="ms-4">
+                <a href="{% url 'article-update' article.pk %}" class="btn btn-outline-info btn-sm">Редактировать статью</a>
+                <a href="{% url 'article-delete' article.pk %}" class="btn btn-outline-danger btn-sm">Удалить статью</a>
+            </div>
+        </div>
+    {% endif %}
+    <br/>
+    <div class="col-md-6 offset-md-3 shadow-sm">
+        <a href="{% url 'article-comment' article.pk %}" type="button" class="btn btn-outline-dark btn-sm">Комментировать</a>
+        <br/>
+        <br/>
+        {% for comment in comments %}
+            <a>
+                <div class="ms-4">
+                    <div class="card border-dark mb-3" style="max-width: 18rem;">
+                        <div class="card-body text-dark ">
+                            <h5 class="card-title fs-6"> {{ comment.comment }}</h5>
+                            <p class="card-text fs-6"> {{ comment.created_at }} {{ comment.author }}</p>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
+</body>
+</html>

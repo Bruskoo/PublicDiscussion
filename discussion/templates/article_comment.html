@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Комментировать</title>
+</head>
+<body>
+{% block content %}
+
+
+
+ <br/>
+        <br/>
+<div class="col-md-6 offset-md-3 shadow-sm">
+        <div class="ms-4">
+            <form method="post">{% csrf_token %}
+                Комментарий:  {{ form.comment }}
+            <input type="submit" value="Save">
+            </form>
+        </div>
+        <br/>
+        <br/>
+    </div>
+
+
+
+
+{% endblock %}
+</body>
+</html>

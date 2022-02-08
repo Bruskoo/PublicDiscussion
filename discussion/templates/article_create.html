@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<html lang="en">
+<head>
+     {% include 'django_quill/media.html' %}
+    <meta charset="UTF-8">
+    <title>Добавить статью</title>
+</head>
+<body>
+
+
+ <form method="POST"  action="{% url 'article-create' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>Заголовок {{form.title}}</div>
+        <br />
+        <div>Обложка {{form.cover}}</div>
+        <br />
+        <div>{{ form.content }}</div>
+
+        <button type="submit" class="btn btn-primary btn-block mt-1">Сохранить</button>
+    </form>
+      {% endblock %}
+</body>
+</html>

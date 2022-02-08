@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col align-self-start"></div>
+        <div class="col align-self-center">
+            <br />
+            <form method="POST" action="{% url 'user-edit' %}">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <br />
+                <button type="submit" class="btn btn-outline-dark btn-sm">Сохранить</button>
+            </form>
+        </div>
+        <div class="col align-self-end"></div>
+    </div>
+</div>
+{% endblock %}
