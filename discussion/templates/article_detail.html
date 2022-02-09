@@ -34,8 +34,19 @@
         </div>
     {% endif %}
     <br/>
+    <br/>
+
     <div class="col-md-6 offset-md-3 shadow-sm">
-        <a href="{% url 'article-comment' article.pk %}" type="button" class="btn btn-outline-dark btn-sm">Комментировать</a>
+        {% if user.is_authenticated %}
+            <div class="ms-4">
+                <form method="post">{% csrf_token %}
+                    Комментарий:  {{ form.comment }}
+                    <input type="submit" value="Save">
+                </form>
+            </div>
+            <br/>
+            <br/>
+        {% endif %}
         <br/>
         <br/>
         {% for comment in comments %}

@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.urls import reverse
 from django.views.generic import (
     CreateView,
@@ -11,6 +10,7 @@ from django.views.generic import (
 )
 from .models import Article, Comment
 from .forms import AddCommentForm, AddArticleForm
+from django.views.generic.edit import FormMixin
 
 
 class ArticleListView(ListView):
@@ -20,15 +20,15 @@ class ArticleListView(ListView):
     paginate_by = 5
 
 
-class ArticleDetailView(DetailView):
-    template_name = "article_detail.html"
-    model = Article
-    form_class = AddCommentForm
-
-    def get_context_data(self, **kwargs):
-        context = super(ArticleDetailView, self).get_context_data(**kwargs)
-        context["comments"] = Comment.objects.filter(article=self.kwargs["pk"])
-        return context
+# class ArticleDetailView(DetailView):
+#     template_name = "article_detail.html"
+#     model = Article
+#     form_class = AddCommentForm
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(ArticleDetailView, self).get_context_data(**kwargs)
+#         context["comments"] = Comment.objects.filter(article=self.kwargs["pk"])
+#         return context
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
@@ -73,19 +73,19 @@ class ArticleDeleteView(LoginRequiredMixin, DeleteView):
         return qs.filter(author=self.request.user)
 
 
-class CommentCreateView(LoginRequiredMixin, CreateView):
-    model = Comment
-    form_class = AddCommentForm
-    template_name = "article_comment.html"
-
-    def form_valid(self, form, **kwargs):
-        pk = self.kwargs["pk"]
-        form.instance.author = self.request.user
-        form.instance.article = Article.objects.get(id=pk)
-        return super().form_valid(form)
-
-    def get_success_url(self, **kwargs):
-        return reverse("article-detail", kwargs={"pk": self.kwargs["pk"]})
+# class CommentCreateView(LoginRequiredMixin, CreateView):
+#     model = Comment
+#     form_class = AddCommentForm
+#     template_name = "article_comment.html"
+#
+#     def form_valid(self, form, **kwargs):
+#         pk = self.kwargs["pk"]
+#         form.instance.author = self.request.user
+#         form.instance.article = Article.objects.get(id=pk)
+#         return super().form_valid(form)
+#
+#     def get_success_url(self, **kwargs):
+#         return reverse("article-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
 class SearchView(ListView):
@@ -101,3 +101,36 @@ class SearchView(ListView):
         else:
             object_list = None
         return object_list
+
+
+class ArticleDetailView(FormMixin, DetailView):
+    model = Article
+    form_class = AddCommentForm
+    template_name = "article_detail.html"
+
+    def get_initial(self):
+        return {"article": self.get_object()}
+
+    def get_success_url(self):
+        return reverse("article-detail", kwargs={"pk": self.kwargs["pk"]})
+
+    def get_context_data(self, **kwargs):
+        context = super(ArticleDetailView, self).get_context_data(**kwargs)
+        context["form"] = self.get_form()
+        context["comments"] = Comment.objects.filter(article=self.kwargs["pk"]).order_by('-created_at')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form, **kwargs):
+        pk = self.kwargs["pk"]
+        form.instance.author = self.request.user
+        form.instance.article = Article.objects.get(id=pk)
+        form.save()
+        return super().form_valid(form)
