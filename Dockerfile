@@ -13,6 +13,11 @@ ENV PYTHONUNBUFFERED 1
 # install dependencies
 RUN apk update\
     && pip install --upgrade pip\
-    && apk add postgresql-dev gcc python3-dev musl-dev zlib-dev jpeg-dev gcc\
+    && apk add postgresql-dev gcc python3-dev musl-dev zlib-dev jpeg-dev gcc git\
     && pip install psycopg2-binary\
-    && pip install -r requirements.txt \
+    && pip install -r requirements.txt
+
+
+# run entrypoint.sh
+COPY entrypoint.sh .
+ENTRYPOINT ["sh", "/usr/src/PublicDiscussion/entrypoint.sh"]
