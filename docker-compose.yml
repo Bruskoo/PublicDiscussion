@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
-    command: gunicorn core.wsgi:application --bind 127.0.0.1:8000
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/usr/src/PublicDiscussion/
     ports:
