@@ -5,7 +5,6 @@ FROM python:3.9.6-alpine
 COPY . /usr/src/PublicDiscussion
 WORKDIR /usr/src/PublicDiscussion
 
-
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -17,7 +16,15 @@ RUN apk update\
     && pip install psycopg2-binary\
     && pip install -r requirements.txt
 
-
 # run entrypoint.sh
 COPY entrypoint.sh .
 ENTRYPOINT ["sh", "/usr/src/PublicDiscussion/entrypoint.sh"]
+
+# create the appropriate directories
+RUN mkdir /home/PublicDiscussion
+RUN mkdir /home/PublicDiscussion/web
+ENV HOME=/home/PublicDiscussion
+ENV APP_HOME=/home/PublicDiscussion/web
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+#WORKDIR $APP_HOME
