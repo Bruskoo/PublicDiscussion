@@ -193,3 +193,4 @@ QUILL_CONFIGS = {
     },
 }
 
+CSRF_TRUSTED_ORIGINS = ['http://*.localhost.com', 'http://*.127.0.0.1', 'http://*.0.0.0.0', 'http://127.0.0.1:1337']
