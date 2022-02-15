@@ -145,14 +145,11 @@ LOGIN_URL = "login"
 
 
 # Static params
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
-MEDIA_URL = "/media/"
-
-STATIC_ROOT = f"{BASE_DIR}/static/"
-
-MEDIA_ROOT = f"{BASE_DIR}/media/"
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Quill
 QUILL_CONFIGS = {
@@ -193,4 +190,4 @@ QUILL_CONFIGS = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ['http://*.localhost.com', 'http://*.127.0.0.1', 'http://*.0.0.0.0', 'http://127.0.0.1:1337']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1337']

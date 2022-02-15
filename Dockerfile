@@ -20,11 +20,13 @@ RUN apk update\
 COPY entrypoint.sh .
 ENTRYPOINT ["sh", "/usr/src/PublicDiscussion/entrypoint.sh"]
 
-# create the appropriate directories
-RUN mkdir /home/PublicDiscussion
-RUN mkdir /home/PublicDiscussion/web
-ENV HOME=/home/PublicDiscussion
-ENV APP_HOME=/home/PublicDiscussion/web
-RUN mkdir $APP_HOME/staticfiles
-RUN mkdir $APP_HOME/mediafiles
-#WORKDIR $APP_HOME
+## create the appropriate directories
+#RUN mkdir /home/PublicDiscussion
+#RUN mkdir /home/PublicDiscussion/web
+#ENV HOME=/home/PublicDiscussion
+#ENV APP_HOME=/home/PublicDiscussion/web
+#RUN mkdir $APP_HOME/staticfiles
+#RUN mkdir $APP_HOME/mediafiles
+
+RUN mkdir static
+RUN mkdir media

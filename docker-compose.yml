@@ -5,8 +5,8 @@ services:
     build: .
     command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/home/PublicDiscussion/web/staticfiles
-      - media_volume:/home/PublicDiscussion/web/mediafiles
+      - static_volume:/usr/src/PublicDiscussion/static
+      - media_volume:/usr/src/PublicDiscussion/media
     expose:
       - 8000
     env_file: .env.dev
@@ -20,8 +20,8 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/home/PublicDiscussion/web/staticfiles
-      - media_volume:/home/PublicDiscussion/web/mediafiles
+      - static_volume:/usr/src/PublicDiscussion/static
+      - media_volume:/usr/src/PublicDiscussion/media
     ports:
       - 1337:80
     depends_on:
